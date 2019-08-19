@@ -5,6 +5,7 @@ Web-page resources Preloader and their smart-activator, display loader as downlo
 - [Description](#Description)
 - [Installation](#Installation)
 - [Usage](#Usage)
+- [Usage restrictions](#Usage_restrictions)
 - [Configure](#Configure)
 - [Examples](#Examples)
 - [TODO](#TODO)
@@ -55,12 +56,13 @@ Dataset attributes will be deleted after resources caching and activation. Due t
  1. Add to index file tag`<script src='Preloader.js'></script>`
  2. Add to index file tags that has resources to be caching (they can be anywhere)
  3. Change attributes in clause 2: `src=url` > `data-src=url`, `href=url` > `data-href=url`, `style='background-image: URL("url")'` > `data-style-background-image=url`
- 4. Create instance of class `Preloader` without parameters or with [optional] parameter  `callback` (`function` type).
+ 4. Create instance of class `Preloader` without parameters or with [optional] parameter  `callback` (type `function`).
  5. [optional] Configure Preloader instance by method `config`. See [Configure section](#Configure)
  6. Start with method `start`.
  
- `Preloader` use DOM, and method `start` must be called after `DOMContentLoaded` event.
- Resources location is supported in accordance to the same-origin policy, CORS implementation is in TODO-list.
+ ## Usage restrictions
+ - `Preloader` use DOM, and method `start` must be called after `DOMContentLoaded` event.
+ - Resources location is supported in accordance to the same-origin policy, CORS implementation is in TODO-list.
 
 ## Configure
 
