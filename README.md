@@ -5,7 +5,7 @@ Web-page resources Preloader and their smart-activator, display loader as downlo
 - [Description](#Description)
 - [Installation](#Installation)
 - [Usage](#Usage)
-- [Usage restrictions](#Usage_restrictions)
+- [Usage restrictions](#Usage-restrictions)
 - [Configure](#Configure)
 - [Examples](#Examples)
 - [TODO](#TODO)
