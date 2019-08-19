@@ -1,6 +1,10 @@
 # www-smart-preloader
 Web-page resources Preloader and their smart-activator, display loader as download bar with %, speed, current/total bytes etc.
 
+![Progress Bar](docs/progressbar.gif "Progress Bar")
+
+![Preloader appearance](docs/preloader_appearance.gif "Preloader appearance")
+
 ## Table of contents
 - [Description](#Description)
 - [Installation](#Installation)
@@ -62,7 +66,7 @@ Dataset attributes will be deleted after resources caching and activation. Due t
  
  ## Usage restrictions
  - `Preloader` use DOM, and method `start` must be called after `DOMContentLoaded` event.
- - Resources location is supported in accordance to the same-origin policy, CORS implementation is in TODO-list.
+ - Resources location is supported in accordance to the `same-origin` policy, CORS implementation is in TODO-list.
 
 ## Configure
 
