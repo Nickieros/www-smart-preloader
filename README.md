@@ -1,111 +1,216 @@
 # www-smart-preloader
-Shows a loader when loads resources (images, scripts, css, etc.) into the browser cache. If necessary, it is possible to activate cached resources immediately or when all resources hit the cache. Loader template: download bar with detailed information about the speed, amount of downloaded data, current file.
+Web-page resources Preloader and their smart-activator, display loader as download bar with %, speed, current/total bytes etc.
 
-# Description:
-Многопоточный предзагрузчик ресурсов, показывает полоску процесса предзагрузки в реальном времени.
-Кеширует ресурсы с опциональной последующей активацией и вызовом callback.
-Расположение ресурсов поддерживаются в соответствии с политикой same-origin, реализация CORS находится в стадии разработки.
+## Table of contents
+- [Description](#Description)
+- [Installation](#Installation)
+- [Usage](#Usage)
+- [Configure](#Configure)
+- [Examples](#Examples)
+- [TODO](#TODO)
+- [Contributing](#Contributing)
+- [Communication](#Communication)
+- [Credits](#Credits)
+- [License](#License)
 
-Поиск ссылок на ресурсы для предзагрузки производится во всем документе или в пределах указанного HTMLElement.
-Возможна обработка готового массива ссылок, в таком случае активации содержимого не происходит, только кеширование.
+## Description
+Web-page resources Preloader and their smart-activator, display loader as download bar with %, speed, current/total bytes etc.
+Preloader caches resources with their optional activation and calls callback at the end.
+ Resources location is supported in accordance to the same-origin policy, CORS implementation is in TODO-list.
 
-Для указания того, что ресурс url нужно кешировать, используется dataset-атрибут: data-cache=url
-Для указания того, что ресурс url нужно активировать после кеширования, необходимо переименовать содержащий url атрибут в его соответствующий dataset-атрибут:
-1. src=url > data-src=url, например, в теге <img src=url> => <img data-src=url> или <script src=url> => <script data-src=url>
-2. href=url > data-href=url, например, в теге <link href=url rel='stylesheet'> => <link data-href=url rel='stylesheet'>
-3. style='background-image: URL("url")' > data-style-background-image=url
+Resources urls for preload is searching in the entire document or within the specified node (HTMLElement).
+It is possible to process an array of links, in this case the activation of the content does not occur, only caching.
 
-Теги с dataset-атрибутами не должны иметь соответствующие атрибуты src, href etc., поскольку это обессмыслит кеширование.
-Активация ресурсов происходит автоматически из dataset-атрибутов:
-1. data-src=url > src=url
-2. data-href=url > href=url
-3. data-style-background-image=url > htmlElement.style.backgroundImage = URL('url')
-После кеширования и активации ресурсов происходит удаление dataset-атрибутов, чем можно воспользоваться, например, для создания CSS-анимации плавного проявления фона после его активации:
-<pre>
-div {
+To specify url to cache, use the dataset attribute: data-cache=url.
+
+To specify url to be activated after caching, rename the url-containing attribute to its corresponding dataset attribute:
+1. `src=url` > `data-src=url`, for example: `<img src=url>` > `<img data-src=url>` or `<script src=url>` > `<script data-src=url>`
+2. `href=url` > `data-href=url`, for example: `<link href=url rel='stylesheet'>` > `<link data-href=url rel='stylesheet'>`
+3. `style="background-image: URL('url')"` > `data-style-background-image=url`
+
+Tags with dataset attributes should not have the appropriate attributes `src`, `href` etc., otherwise caching will not make sense.
+Resource activation is automatic by creating attributes from dataset:
+1. `data-src=url` > `src=url`
+2. `data-href=url` > `href=url`
+3. `data-style-background-image=url` > `htmlElement.style.backgroundImage = URL('url')`
+
+Dataset attributes will be deleted after resources caching and activation. Due to this, for example, a smooth display of element can be implemented by CSS animation:
+```
+.background[data-src] {
+     opacity: 0;
+     }
+
+.background {
      opacity: 1;
-     transition: background-color 1s}
-div[data-src] {
-     opacity: 0}</pre>
-     
-# Installation:
-1. Скопировать файл getFilesSize.php в корневую папку (изменить путь к скрипту можно в методе _getFilesSize). Это скрипт php, который принимает массив ссылок на файлы и возвращает массив их размеров.
-2. Скопировать файл Preloader.js в корневую папку
-3. Можно, но необязательно копировать шаблон index.html
+     transition: opacity 1s;
+     }
+```
 
-# Usage:
- 1. Добавить в головной файл тег <script src='Preloader.js'></script>
- 2. Добавить в головной файл теги, ресурсы которых надо кешировать
- 3. Изменить атрибуты в тегах п.2:
-    src=url > data-src=url, href=url > data-href=url, style='background-image: URL("url")' > data-style-background-image=url
- 4. Создать экземпляр Preloader без параметров или с указанием следующих необязательных параметров:
- 4.1. callback (тип function).
- 4.2. urlsSource (тип Array<string>|HTMLElement|Document) - источник ссылок: строковый массив ссылок или корневой узел извлекаемых url, а если urlsSource не указан - то url извлекается из всего документа (объект document - начиная с <html>).
- 5. Указать callback с помощью метода onSuccess, если он не был указан в п.4.1.
- 6. Опция: включение активации кешированных ресурсов сразу после применения внешнего набора правил CSS через метод activateAfterCssRules
- 7. Запуск процесса кеширования с помощью метода start().
+## Installation
+1. Copy the file `getFilesSize.php` to the site root folder (to change the script path is possible in method `_getFilesSize`). It is php script that get links array and returns sizes array
+2. Copy the file `Preloader.js` to the site root folder
+3. [optional] Copy the template file `index.html`
+
+## Usage
+ 1. Add to index file tag`<script src='Preloader.js'></script>`
+ 2. Add to index file tags that has resources to be caching (they can be anywhere)
+ 3. Change attributes in clause 2: `src=url` > `data-src=url`, `href=url` > `data-href=url`, `style='background-image: URL("url")'` > `data-style-background-image=url`
+ 4. Create instance of class `Preloader` without parameters or with [optional] parameter  `callback` (`function` type).
+ 5. [optional] Configure Preloader instance by method `config`. See [Configure section](#Configure)
+ 6. Start with method `start`.
  
- Т.к. Preloader использует DOM, то вызов start() должен быть не ранее события DOMContentLoaded
- Расположение ресурсов поддерживаются в соответствии с политикой same-origin, поддержка CORS добавлена в TODO-список
+ `Preloader` use DOM, and method `start` must be called after `DOMContentLoaded` event.
+ Resources location is supported in accordance to the same-origin policy, CORS implementation is in TODO-list.
 
-# Examples:
-// Минифицированная реализация.
-// Кеширование и активация ресурсов из всего документа.
-// Указание callback во время создания экземпляра класса
-(new Preloader(callback)).start();
+## Configure
 
-// кеширование массива указанных ссылок
-let preloader = new Preloader(
-     callback,
-     ['./img/b.jpg', 'media.css', 'app.js']);
-     
-// кеширование и активация ссылок, найденных в пределах елемента с селектором '.gallery',
-// указание callback после создания экземпляра класса,
-// загрузка фоновых изображений сразу после применения внешнего набора правил CSS
-// с указанием истинного условия (внешний css содержит: body{color:red})
-let preloader = new Preloader(
-     false,
-     document.querySelector('.gallery') );
-preloader.onSuccess = () => alert('preload complete');
-preloader.activateAfterCssRules(
-     'getComputedStyle(document.body).color === "red"',
-     ['data-style-background-image', 'data-src', 'data-href']);
+You can run Preloader without any parameters, so default values/actions will be applied:
+- no actions after caching and applying (without config.callback)
+- logging to console disabled (without config.enableLog)
+- resources will be activated after downloading all files except tags containing dataset-attributes 'data-cache' (without config.activateCondition and/or config.datasetToActivate)
+- getting urls by extracting them from tags containing dataset-attributes 'data-...' in the entire document (without config.urlsSource)
 
-# TODO:
-- реализовать i18n в пределах t9n
-- перевести всё на английский
-- реализовать retry при сетевой ошибке во время загрузки
-- детальнее провести дифференцирование ошибок при загрузке ресурса
-- учесть случай, когда условие проверки CSS никогда не станет истинным (условие проверки применения к DOM внешнего набора CSS правил)
-- добавить front-end альтернативу back-end реализации определения размеров файлов
-- добавить дифференцирование ошибок proxy
-- добавить поддержку CORS для использования нелокальных ресурсов
-- добавить опционально режим загрузки, при котором ресурсы, указанные в activateAfterCssRulesCondition, будут загружаться первыми
-- шаблонизировать внешний вид лоадера loader (хочу сделать шаблон в виде наполняющейся чашки кофе с анимированным исходящим паром над ней)
-- сделать удобную детальную настройку в виде:
-preloader.config = {
-    onSuccessCallback: callback,
-    enableLog: false,
-    progressBarHidingDelay: 500,
-    progressBarExtendedInfo: true, // слева от процентов текущий/ожидаемый размер загруженного, скорость, файл и т.д.
-    progressBarStyle: '.progressBarWrapper{...} .progressBar{...} .progressBarFill{...}',
-    getFileSizeMode: 'client-side',
-    retryCount: 3,
-    activateAfterCssRulesCondition: condition, // условие для проверки применения внешнего CSS
-    activateAfterCssRulesResources: datasetList, // типы dataset для активации
-    activateAfterCssRulesFirst: true, // приоритет загрузки
+Set callback function to run after caching and activating is done:
+```
+// 1. in constructor
+let preloader = new Preloader(callbackFunction);
+
+// 2. in config
+preloader.config({
+    callback: callbackFunction,
+})
+```
+Full list of config parameters:
+- callback callback function (type {Function})
+- enableLog enable logging to console: true/false (type {boolean})
+- activateCondition  css detection: a false condition that becomes true when external CSS rules are loaded and applied to DOM (type {string}).
+- datasetToActivate a string array with dataset's names in attributes of resources that must be activated after activateCondition becomes true (type {Array.<String>}). Example: ['data-src', 'data-href']
+- urlsSource url's sources: root node for url extraction or array with url's strings, default - root node: document (type {Array<string>|Document|HTMLElement}). Example: 
+
+activateCondition and datasetToActivate must be assigned to activate resources immediately after applying an external set of CSS rules, before the end of loading all resources.
+
+For example, it may be necessary to apply the cached background picture of an element while the process of loading other resources is still ongoing, but the external css class and preparation for CSS animation must be applied to the element before its background picture is displayed.
+
+examples for activateCondition parameter:
+```
+// activateCondition example for an external css rules with following contents:
+// < ./css/media.css >
+.myClass {
+   color: blue;
+   height: 10vh;
 }
+// if element's color didn't assign before external css rule applied
+condition = 'getComputedStyle(document.querySelector(".myClass")).color';
+condition = 'getComputedStyle(document.querySelector(".myClass")).color == "blue"';
+// if element's height didn't assign before external css rule applied
+condition = 'document.querySelector(".myClass").offsetHeight';
+condition = 'document.querySelector(".myClass").offsetHeight > 0';
+condition = 'parseInt(getComputedStyle(document.querySelector(".myClass")).height)';
+// wrong example, it is necessary to check the computed style applied to the element
+// by getComputedStyle, not the immediate style of the element itself
+condition = 'document.querySelector(".myClass").style.color';
+// wrong example, it is necessary to check the computed style applied to the element
+// by getComputedStyle or offsetHeight, not the immediate style of the element itself
+condition = 'document.querySelector(".myClass").style.height > 0';
+// wrong example, the condition value will be '0px' at the beginning,
+// and casting it to boolean will yield true, so you need to do a string comparison
+// === '0px' or convert to the number by parseInt
+condition = 'getComputedStyle(document.querySelector(".myClass")).height';
+```
 
-# Contributing:
-Thanks for taking the time to join our community and start contributing!
-Please remember to read and observe the Code of Conduct.
-This project accepts contribution via github pull requests. This document outlines the process to help get your contribution accepted. Please also read the Kubernetes contributor guide which provides detailed instructions on how to get your ideas and bug fixes seen and accepted.
-If you have any problem with the package or any suggestions, please file an issue.
-If you have any suggestions? contact me.
-I'd love to accept your patches and make this project beter.
+## Examples
+```
+// 1. Minified start
+// Caching and activating resources extracted from entire document,
+// display loader as download bar with %, speed, current/total bytes etc.
+window.onload = () => (new Preloader()).start();
 
-# Credits:
+// 2.1 Start with callback only. Set callback in constructor.
+// The same as clause 1 but callback assigned
+window.onload = () => {
+     (new Preloader(() => {alert('Preloader ended successfully')}))
+     .start()
+};
+
+// 2.2 Start with callback only. Set callback in config.
+// The same as clause 1 but callback assigned
+let preloader = new Preloader();
+preloader.config({
+     callback: () => alert('Caching & activating resources complete'));
+window.onload = () => preloader.start();
+
+// 3. Full config
+// Caching and activating resources extracted from element with '.gallery'
+// selector, assign callback, activating background images immediatly after
+// external CSS rules applied to DOM (external css contain: body{color:red})
+let preloader = new Preloader();
+preloader.config({
+     activateCondition: 'getComputedStyle(document.body).color === "red"',
+     datasetToActivate: ['data-style-background-image'],
+     enableLog: true,
+     urlsSource: 'document.querySelector(".gallery")',
+     callback: () => alert('Caching & activating resources complete'));
+window.onload = () => preloader.start();
+
+// Console messages with config.enableLog = true
+270 Preloader: get NodeList                                                    |Preloader.js:769 
+271 Preloader: get download links                                              |Preloader.js:769 
+272 Preloader: get files size                                                  |Preloader.js:769 
+333 Preloader: check files size                                                |Preloader.js:769 
+333 Preloader: downloading 1 of 5 links: resources/media.css                   |Preloader.js:769 
+334 Preloader: downloading 2 of 5 links: resources/dummy.js                    |Preloader.js:769 
+334 Preloader: downloading 3 of 5 links: resources/background-tiny.jpg         |Preloader.js:769 
+335 Preloader: downloading 4 of 5 links: resources/big_size_font.woff          |Preloader.js:769 
+335 Preloader: downloading 5 of 5 links: resources/big_size_background.jpg     |Preloader.js:769 
+450 Preloader: resources/media.css caching complete                            |Preloader.js:769 
+450 Preloader: activate external CSS rules in resources/media.css              |Preloader.js:769 
+463 Preloader: resources/dummy.js caching complete                             |Preloader.js:769 
+465 Preloader: external CSS rules in 'resources/media.css' were applied to DOM |Preloader.js:769 
+520 Preloader: resources/background-tiny.jpg caching complete                  |Preloader.js:769 
+521 Preloader: background 'resources/background-tiny.jpg' activated            |Preloader.js:769 
+5882 Preloader: resources/big_size_background.jpg caching complete             |Preloader.js:769 
+6394 Preloader: resources/big_size_font.woff caching complete                  |Preloader.js:769 
+6394 Preloader: download to cache complete: total 11015 KB in 5 files          |Preloader.js:769 
+6395 Preloader: resource 'resources/dummy.js' activated                        |Preloader.js:769 
+6396 Preloader: caching & activating resources complete                        |Preloader.js:769 
+6399 I am JavaScript code from resources/dummy.js: i was cached and activated  |dummy.js:1       
+7397 Callback function completed successfully                                  |(index):26       
+```
+
+## TODO
+- [x] implement getting started without parameters
+- [x] implement instance configuration through instance config
+- [ ] implement i18n within t9n ?
+- [ ] add retry fetch when network error occurred while downloading
+- [ ] make more detailed errors analysis when loading resources
+- [ ] work out the case when CSS condition never becomes true. This condition is necessary to determine when the external CSS ruleset is applied to DOM
+- [ ] add front-end alternative for file sizing 
+- [ ] add CORS support for moving beyond the restrictions of same-origin policy
+- [ ] add support for priority download and activation
+- [ ] add templating for loader 
+- [ ] translate to english all JSDoc info and comments
+- [ ] implement early resource activation without specifying them in config.datasetToActivate
+- [ ] rendering artifacts in firefox? It looks like they gone
+
+## Contributing
+Thanks for taking the time to start contributing!
+
+I'd love to accept your suggestions and patches to make this project better and more useful.
+
+As a potential contributor, your changes and ideas are welcome at any hour of the day or night, weekdays, weekends, and holidays. Please do not ever hesitate to ask a question or send a pull request.
+If you have any questions or suggestions or any problem with this project, please [file an issue](https://help.github.com/en/articles/creating-an-issue).
+
+This project accepts contribution via github [pull requests](https://help.github.com/articles/about-pull-requests/). This document outlines the process to help get your contribution accepted.
+
+Please remember to read and observe the [Code of Conduct](https://github.com/cncf/foundation/blob/master/code-of-conduct.md).
+
+## Communication
+
+If you have any questions or suggestions, please [file an issue](https://help.github.com/en/articles/creating-an-issue).
+Other forms of communication will be available later.
+
+## Credits
 Nickieros
 
-# License:
+## License
 MIT
