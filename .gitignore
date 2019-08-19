@@ -1,0 +1,5 @@
+node_modules
+stuff_sources
+.idea
+package-lock.json
+robots.txt
