@@ -82,7 +82,7 @@ Dataset attributes will be deleted after resources caching and activation. Due t
  
  ## Usage restrictions
  - `Preloader` use DOM, and method `start` must be called after `DOMContentLoaded` event.
- - Resources location is supported in accordance to the `same-origin` policy, CORS implementation is in [TODO-list](TODO).
+ - Resources location is supported in accordance to the `same-origin` policy, CORS implementation is in [TODO-list](TODO.md).
  - enabling built-in speed limit in some browsers leads to re-downloading some cached resources (.js, .css), which may delay resource activation until total download complete
 
 ## Configure
@@ -201,7 +201,7 @@ window.onload = () => preloader.start();
 ```
 
 ## TODO
-[TODO list](TODO)
+[TODO list](TODO.md)
 
 ## Contributing
 Thanks for taking the time to start contributing!
