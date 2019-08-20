@@ -52,7 +52,7 @@ Resource activation is automatic by creating attributes from dataset:
 3. `data-style-background-image=URL` > `htmlElement.style.backgroundImage = url('URL')`
 
 Dataset attributes will be deleted after resources caching and activation. Due to this, for example, a smooth display of element can be implemented by CSS animation:
-```
+```css
 .background[data-src] {
      opacity: 0;
      }
@@ -94,7 +94,7 @@ You can run Preloader without any parameters, so default values/actions will be 
 - getting URLs by extracting them from tags containing dataset-attributes 'data-...' in the entire document (without config.urlsSource)
 
 Set callback function to run after caching and activating is done:
-```
+```javascript 
 // 1. in constructor
 let preloader = new Preloader(callbackFunction);
 
@@ -115,13 +115,15 @@ activateCondition and datasetToActivate must be assigned to activate resources i
 For example, it may be necessary to apply the cached background picture of an element while the process of loading other resources is still ongoing, but the external css class and preparation for CSS animation must be applied to the element before its background picture is displayed.
 
 examples for activateCondition parameter:
-```
-// activateCondition example for an external css rules with following contents:
-// < ./css/media.css >
+```css
+/* activateCondition example for an external css rules with following contents:
+< ./css/media.css >*/
 .myClass {
    color: blue;
    height: 10vh;
 }
+```
+```javascript
 // if element's color didn't assign before external css rule applied
 condition = 'getComputedStyle(document.querySelector(".myClass")).color';
 condition = 'getComputedStyle(document.querySelector(".myClass")).color == "blue"';
@@ -142,26 +144,29 @@ condition = 'getComputedStyle(document.querySelector(".myClass")).height';
 ```
 
 ## Examples
-```
+```javascript
 // 1. Minified start
 // Caching and activating resources extracted from entire document,
 // display loader as download bar with %, speed, current/total bytes etc.
 window.onload = () => (new Preloader()).start();
-
+```
+```javascript
 // 2.1 Start with callback only. Set callback in constructor.
 // The same as clause 1 but callback assigned
 window.onload = () => {
      (new Preloader(() => {alert('Preloader ended successfully')}))
      .start()
 };
-
+```
+```javascript
 // 2.2 Start with callback only. Set callback in config.
 // The same as clause 1 but callback assigned
 let preloader = new Preloader();
 preloader.config({
-     callback: () => alert('Caching & activating resources complete'));
+     callback: () => alert('Caching & activating resources complete')});
 window.onload = () => preloader.start();
-
+```
+```javascript
 // 3. Full config
 // Caching and activating resources extracted from element with '.gallery'
 // selector, assign callback, activating background images immediatly after
@@ -172,9 +177,10 @@ preloader.config({
      datasetToActivate: ['data-style-background-image'],
      enableLog: true,
      urlsSource: 'document.querySelector(".gallery")',
-     callback: () => alert('Caching & activating resources complete'));
+     callback: () => alert('Caching & activating resources complete')});
 window.onload = () => preloader.start();
-
+```
+```
 // Console messages with config.enableLog = true
 270 Preloader: get NodeList                                                    |Preloader.js:769 
 271 Preloader: get download links                                              |Preloader.js:769 
