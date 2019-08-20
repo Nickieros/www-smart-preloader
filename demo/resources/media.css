@@ -23,16 +23,6 @@
 		margin: 0;
 	}
 
-	div[data-style-background-image] {
-		opacity: 0;
-		z-index: 0;
-	}
-
-	div[data-cache] {
-		opacity: 0;
-		z-index: 0;
-	}
-
 	.minifiedPreloader {
 		display: block;
 		position: absolute;

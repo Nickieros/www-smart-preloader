@@ -8,11 +8,14 @@ Web-page resources Preloader and their smart-activator, display loader as downlo
 ## Table of contents
 - [Description](#Description)
 - [Activity diagram](#Activity-diagram)
+- [Dependency](#Dependency)
+- [Javascript version](#Javascript-version)
 - [Installation](#Installation)
 - [Usage](#Usage)
 - [Usage restrictions](#Usage-restrictions)
 - [Configure](#Configure)
 - [Examples](#Examples)
+- [Demo](#Demo)
 - [TODO](#TODO)
 - [Contributing](#Contributing)
 - [Communication](#Communication)
@@ -33,7 +36,6 @@ Web-page resources Preloader and their smart-activator, display loader as downlo
 ## Description
 Web-page resources Preloader and their smart-activator, display loader as download bar with %, speed, current/total bytes etc.
 Preloader caches resources with their optional activation and calls callback at the end.
- Resources location is supported in accordance to the same-origin policy, CORS implementation is in TODO-list.
 
 Resources URLs for preload is searching in the entire document or within the specified node (HTMLElement).
 It is possible to process an array of links, in this case the activation of the content does not occur, only caching.
@@ -51,7 +53,7 @@ Resource activation is automatic by creating attributes from dataset:
 2. `data-href=URL` > `href=URL`
 3. `data-style-background-image=URL` > `htmlElement.style.backgroundImage = url('URL')`
 
-Dataset attributes will be deleted after resources caching and activation. Due to this, for example, a smooth display of element can be implemented by CSS animation:
+Dataset attributes will be deleted after resources caching and activation. Due to this, for example, a smooth appearance of element can be implemented by CSS animation:
 ```css
 .background[data-src] {
      opacity: 0;
@@ -59,18 +61,25 @@ Dataset attributes will be deleted after resources caching and activation. Due t
 
 .background {
      opacity: 1;
-     transition: opacity 1s;
+     transition: opacity 2s;
      }
 ```
+Explanation: initially, element with class `background` and attribute `data-src` has zero opacity, after automatically deleting attribute `data-src`, element opacity will be 1, so CSS opacity animation will start from 0 to 1 for 2 seconds
+
 
 ## Activity diagram
-
 ![Activity diagram](readme_media/diagram.svg "Activity diagram")
+
+## Dependency
+None. The code is written in vanilla JavaScript.
+
+## Javascript version
+ECMAScript 2015, a little ECMAScript 2017-2018
 
 ## Installation
 1. Copy the file `getFilesSize.php` to the site root folder (to change the script path is possible in method `_getFilesSize`). It is php script that get links array and returns sizes array
 2. Copy the file `Preloader.js` to the site root folder
-3. [optional] Copy the template file `index.html`
+3. [optional] Copy the template file `index.html` from demo folder
 
 ## Usage
  1. Add to index file tag`<script src='Preloader.js'></script>`
@@ -78,31 +87,14 @@ Dataset attributes will be deleted after resources caching and activation. Due t
  3. Change attributes in clause 2: `src=URL` > `data-src=URL`, `href=URL` > `data-href=URL`, `style='background-image: url("URL")'` > `data-style-background-image=URL`
  4. Create instance of class `Preloader` without parameters or with [optional] parameter  `callback` (type `function`).
  5. [optional] Configure Preloader instance by method `config`. See [Configure section](#Configure)
- 6. Start with method `start`.
+ 6. Start with method `start` after `DOMContentLoaded` or `load` events, or at any time after the above.
  
  ## Usage restrictions
- - `Preloader` use DOM, and method `start` must be called after `DOMContentLoaded` event.
+ - `Preloader` use DOM, don't run method `start` before `DOMContentLoaded` event.
  - Resources location is supported in accordance to the `same-origin` policy, CORS implementation is in [TODO-list](TODO.md).
- - enabling built-in speed limit in some browsers leads to re-downloading some cached resources (.js, .css), which may delay resource activation until total download complete
+ - enabling built-in speed limit in some browsers leads to re-downloading some cached resources (.js, .css), which may delay resource activation until total download complete.
 
 ## Configure
-
-You can run Preloader without any parameters, so default values/actions will be applied:
-- no actions after caching and applying (without config.callback)
-- logging to console disabled (without config.enableLog)
-- resources will be activated after downloading all files except tags containing dataset-attributes 'data-cache' (without config.activateCondition and/or config.datasetToActivate)
-- getting URLs by extracting them from tags containing dataset-attributes 'data-...' in the entire document (without config.urlsSource)
-
-Set callback function to run after caching and activating is done:
-```javascript 
-// 1. in constructor
-let preloader = new Preloader(callbackFunction);
-
-// 2. in config
-preloader.config({
-    callback: callbackFunction,
-})
-```
 Full list of config parameters:
 - `callback` callback function (type {Function})
 - `enableLog` enable logging to console: true/false (type {boolean})
@@ -110,14 +102,30 @@ Full list of config parameters:
 - `datasetToActivate` a string array with dataset's names in attributes of resources that must be activated after activateCondition becomes true (type {Array.<String>}). Example: ['data-src', 'data-href']
 - `urlsSource` URL's sources: root node for URLs extraction or array with URL's strings, default - root node: document (type {Array<string>|Document|HTMLElement}). 
 
-activateCondition and datasetToActivate must be assigned to activate resources immediately after applying an external set of CSS rules, before the end of loading all resources.
+Set callback function to run after caching and activating is done:
+- in constructor:
+```javascript 
+let preloader = new Preloader(callbackFunction);
+```
+- in config:
+```javascript
+preloader.config({
+    callback: callbackFunction,
+})
+```
+
+You can run Preloader without any parameters, so default values/actions will be applied:
+- no actions after caching and applying without `callback`
+- logging to console disabled without `enableLog: true`
+- resources will be activated after downloading all files except tags containing dataset-attributes 'data-cache' without `activateCondition` or `datasetToActivate`
+- getting URLs by extracting them from tags containing dataset-attributes 'data-...' in the entire document without `urlsSource`
+
+`activateCondition` and `datasetToActivate` must be assigned to activate resources immediately after applying an external CSS ruleset, before the end of loading all resources.
 
 For example, it may be necessary to apply the cached background picture of an element while the process of loading other resources is still ongoing, but the external css class and preparation for CSS animation must be applied to the element before its background picture is displayed.
 
-examples for activateCondition parameter:
+examples for `activateCondition` parameter, external css rules `./css/media.css` with following contents:
 ```css
-/* activateCondition example for an external css rules with following contents:
-< ./css/media.css >*/
 .myClass {
    color: blue;
    height: 10vh;
@@ -144,44 +152,37 @@ condition = 'getComputedStyle(document.querySelector(".myClass")).height';
 ```
 
 ## Examples
+1 . Minified start without any parameters (caching and activating resources extracted from entire document, display loader as download bar) :
 ```javascript
-// 1. Minified start
-// Caching and activating resources extracted from entire document,
-// display loader as download bar with %, speed, current/total bytes etc.
 window.onload = () => (new Preloader()).start();
 ```
+2 . The same as clause 1 but callback assigned in constructor.
 ```javascript
-// 2.1 Start with callback only. Set callback in constructor.
-// The same as clause 1 but callback assigned
 window.onload = () => {
      (new Preloader(() => {alert('Preloader ended successfully')}))
      .start()
 };
 ```
+3 . The same as clause 1 but callback assigned in config.
 ```javascript
-// 2.2 Start with callback only. Set callback in config.
-// The same as clause 1 but callback assigned
 let preloader = new Preloader();
 preloader.config({
-     callback: () => alert('Caching & activating resources complete')});
+     callback: () => alert('Preloader ended successfully')});
 window.onload = () => preloader.start();
 ```
+4 . Full config. Caching and activating resources extracted from element with '.gallery' selector, assign callback, activating background images immediately after external CSS rules applied to DOM (external css contain: `body { color:red }` ) :
 ```javascript
-// 3. Full config
-// Caching and activating resources extracted from element with '.gallery'
-// selector, assign callback, activating background images immediatly after
-// external CSS rules applied to DOM (external css contain: body{color:red})
 let preloader = new Preloader();
 preloader.config({
      activateCondition: 'getComputedStyle(document.body).color === "red"',
      datasetToActivate: ['data-style-background-image'],
      enableLog: true,
      urlsSource: 'document.querySelector(".gallery")',
-     callback: () => alert('Caching & activating resources complete')});
+     callback: () => alert('Preloader ended successfully')});
 window.onload = () => preloader.start();
 ```
+5 . Console messages with `preloader.config({ enableLog: true });`
 ```
-// Console messages with config.enableLog = true
 270 Preloader: get NodeList                                                    |Preloader.js:769 
 271 Preloader: get download links                                              |Preloader.js:769 
 272 Preloader: get files size                                                  |Preloader.js:769 
@@ -205,6 +206,11 @@ window.onload = () => preloader.start();
 6399 I am JavaScript code from resources/dummy.js: i was cached and activated  |dummy.js:1       
 7397 Callback function completed successfully                                  |(index):26       
 ```
+
+##Demo
+The demo is in [its folder](/demo). It implements resource loading with quick display of low-quality image while loader show process of downloading other resources. When everything downloaded, cached resources are activated, including a Hi-Res image, which replaces its low-quality counterpart.
+Also, there are comments explaining how to start minified Preloader.
+Attention, for greater clarity, the size of downloaded resources is made at 11 MB
 
 ## TODO
 [TODO list](TODO.md)

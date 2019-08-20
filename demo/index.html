@@ -19,20 +19,20 @@
 		datasetToActivate: ['data-style-background-image'], // dataset's of resources that must be activated after activateCondition becomes true
         enableLog: true, // logging to console
         callback: () => {
-            // display hi-res cached image with opacity css-animation
+            // smooth appearance of hi-res cached image with css-animation (transition: opacity)
             let bigSizeBackground = document.querySelector('#bigSizeBackground');
             bigSizeBackground.style.backgroundImage = `url('${bigSizeBackground.dataset.cache}'`;
             delete bigSizeBackground.dataset.cache;
             console.log(Math.round(performance.now()) + ' Callback function completed successfully')},
 	});
 
-	// start Preloader after 'load' event occurred in window
+    // start Preloader after 'load' event occurred in window
     window.addEventListener('load', () => preloader.start());
 
     // to start minified Preloader without callback and config:
-	// 1. comment div with id='bigSizeBackground' and ALL lines in current script tag
+    // 1. comment div with id='bigSizeBackground' and ALL lines in current script tag
     // 2. uncomment image tag with id='minifiedPreloader' (located at the end of body) for exclude duplicates
-	// 3. uncomment line below
+    // 3. uncomment line below
     // window.onload = () => (new Preloader()).start();
 
 </script>
@@ -47,7 +47,7 @@
 	<script data-src='resources/dummy.js'></script>
 			<!--
 			since activateCondition and datasetListToActivate was assigned, resource below to be activated
-			immediately after external CSS rules was applied, before the end of loading all resources -->
+			immediately after external CSS rules was applied, before the end of downloading all resources -->
 	<div	data-style-background-image='resources/background-tiny.jpg'
 			id='background'
 			class='tiny background'>
@@ -60,7 +60,8 @@
 			class='big background'>
 	</div>
 
-<!--	<img	data-src='resources/big_size_background.jpg' id='minifiedPreloader' class='minifiedPreloader'> -->
+<!--	<img	data-src='resources/big_size_background.jpg'
+				id='minifiedPreloader' class='minifiedPreloader'> -->
 
 <!-- end data for Preloader -->
 
