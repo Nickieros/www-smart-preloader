@@ -216,7 +216,7 @@ This project accepts contribution via github [pull requests](https://help.github
 Please remember to read and observe the [Code of Conduct](https://github.com/cncf/foundation/blob/master/code-of-conduct.md).
 
 ## Communication
-If you have any questions or suggestions for this project, please [file an issue](https://help.github.com/en/articles/creating-an-issue). For other questions [contact me](https://github.com/Nickieros).
+If you have any questions or suggestions for this project, please [file an issue](https://github.com/Nickieros/www-smart-preloader/issues). For other questions [contact me](https://github.com/Nickieros).
 
 ## Credits
 2019 [Nickieros](https://github.com/Nickieros)
