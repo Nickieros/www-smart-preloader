@@ -207,7 +207,7 @@ window.onload = () => preloader.start();
 7397 Callback function completed successfully                                  |(index):26       
 ```
 
-##Demo
+## Demo
 The demo is in [its folder](/demo). It implements resource loading with quick display of low-quality image while loader show process of downloading other resources. When everything downloaded, cached resources are activated, including a Hi-Res image, which replaces its low-quality counterpart.
 Also, there are comments explaining how to start minified Preloader.
 Attention, for greater clarity, the size of downloaded resources is made at 11 MB
