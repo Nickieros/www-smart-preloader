@@ -20,7 +20,7 @@ Web-page resources Preloader and their smart-activator, display loader as downlo
 - [License](#License)
 
 ## Features
-- caching resources retrieved from URLs array or web page by specified datasets in tags )
+- caching resources retrieved from URLs array or web page by specified datasets in tags
 - activating all resources after caching  
 - activating specified resources after external CSS ruleset loaded and applied to DOM
 - displaying loader as download bar while downloading resource with the appearance and disappearance
