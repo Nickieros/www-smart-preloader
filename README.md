@@ -215,7 +215,7 @@ Thanks for taking the time to start contributing!
 I'd love to accept your suggestions and patches to make this project better and more useful.
 
 As a potential contributor, your changes and ideas are welcome at any hour of the day or night, weekdays, weekends, and holidays. Please do not ever hesitate to ask a question or send a pull request.
-If you have any questions or suggestions or any problem with this project, please [file an issue](https://help.github.com/en/articles/creating-an-issue).
+If you have any questions or suggestions or any problem with this project, please [file an issue](https://github.com/Nickieros/www-smart-preloader/issues).
 
 This project accepts contribution via github [pull requests](https://help.github.com/articles/about-pull-requests/). This document outlines the process to help get your contribution accepted.
 

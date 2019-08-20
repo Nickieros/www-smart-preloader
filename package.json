@@ -1,12 +1,15 @@
 {
-  "name": "project_name",
+  "name": "preloader",
   "version": "1.0.0",
-  "description": "project description",
-  "main": "index.js",
+  "description": "Web-page resources Preloader and their smart-activator, display loader as download bar",
+  "main": "index.html",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "babel-node": "babel-node",
+    "build": "NODE_ENV=production babel src --out-dir dist --source-maps inline",
+    "prepublishOnly": "npm run build"
   },
-  "author": "",
+  "author": "Nickieros",
   "license": "ISC",
   "eslint": "eslint --ignore-path .gitignore .",
   "dependencies": {},
