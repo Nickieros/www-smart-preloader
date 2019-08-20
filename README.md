@@ -1,12 +1,13 @@
 # www-smart-preloader
-Web-page resources Preloader and their smart-activator, display loader as download bar with %, speed, current/total bytes etc.
+Web-page resources Preloader and their smart-activator, display loader as download bar
 
-![Progress Bar](docs/progressbar.gif "Progress Bar")
+![Progress Bar](readme_media/progressbar.gif "Progress Bar")
 
-![Preloader appearance](docs/preloader_appearance.gif "Preloader appearance")
+![Preloader appearance](readme_media/preloader_appearance.gif "Preloader appearance")
 
 ## Table of contents
 - [Description](#Description)
+- [Activity diagram](#Activity-diagram)
 - [Installation](#Installation)
 - [Usage](#Usage)
 - [Usage restrictions](#Usage-restrictions)
@@ -18,26 +19,37 @@ Web-page resources Preloader and their smart-activator, display loader as downlo
 - [Credits](#Credits)
 - [License](#License)
 
+## Features
+- caching resources retrieved from URLs array or web page by specified datasets in tags )
+- activating all resources after caching  
+- activating specified resources after external CSS ruleset loaded and applied to DOM
+- displaying loader as download bar while downloading resource with the appearance and disappearance
+- loader info:
+  - downloading percentage
+  - average download speed
+  - downloaded / total bytes of all resources
+  - current file with downloaded / total bytes  
+
 ## Description
 Web-page resources Preloader and their smart-activator, display loader as download bar with %, speed, current/total bytes etc.
 Preloader caches resources with their optional activation and calls callback at the end.
  Resources location is supported in accordance to the same-origin policy, CORS implementation is in TODO-list.
 
-Resources urls for preload is searching in the entire document or within the specified node (HTMLElement).
+Resources URLs for preload is searching in the entire document or within the specified node (HTMLElement).
 It is possible to process an array of links, in this case the activation of the content does not occur, only caching.
 
-To specify url to cache, use the dataset attribute: data-cache=url.
+To specify URL to cache, use the dataset attribute: data-cache=URL.
 
-To specify url to be activated after caching, rename the url-containing attribute to its corresponding dataset attribute:
-1. `src=url` > `data-src=url`, for example: `<img src=url>` > `<img data-src=url>` or `<script src=url>` > `<script data-src=url>`
-2. `href=url` > `data-href=url`, for example: `<link href=url rel='stylesheet'>` > `<link data-href=url rel='stylesheet'>`
-3. `style="background-image: URL('url')"` > `data-style-background-image=url`
+To specify URL to be activated after caching, rename the URL-containing attribute to its corresponding dataset attribute:
+1. `src=URL` > `data-src=URL`, for example: `<img src=URL>` > `<img data-src=URL>` or `<script src=URL>` > `<script data-src=URL>`
+2. `href=URL` > `data-href=URL`, for example: `<link href=URL rel='stylesheet'>` > `<link data-href=URL rel='stylesheet'>`
+3. `style="background-image: url('URL')"` > `data-style-background-image=URL`
 
 Tags with dataset attributes should not have the appropriate attributes `src`, `href` etc., otherwise caching will not make sense.
 Resource activation is automatic by creating attributes from dataset:
-1. `data-src=url` > `src=url`
-2. `data-href=url` > `href=url`
-3. `data-style-background-image=url` > `htmlElement.style.backgroundImage = URL('url')`
+1. `data-src=URL` > `src=URL`
+2. `data-href=URL` > `href=URL`
+3. `data-style-background-image=URL` > `htmlElement.style.backgroundImage = url('URL')`
 
 Dataset attributes will be deleted after resources caching and activation. Due to this, for example, a smooth display of element can be implemented by CSS animation:
 ```
@@ -51,6 +63,10 @@ Dataset attributes will be deleted after resources caching and activation. Due t
      }
 ```
 
+## Activity diagram
+
+![Activity diagram](readme_media/diagram.svg "Activity diagram")
+
 ## Installation
 1. Copy the file `getFilesSize.php` to the site root folder (to change the script path is possible in method `_getFilesSize`). It is php script that get links array and returns sizes array
 2. Copy the file `Preloader.js` to the site root folder
@@ -59,14 +75,15 @@ Dataset attributes will be deleted after resources caching and activation. Due t
 ## Usage
  1. Add to index file tag`<script src='Preloader.js'></script>`
  2. Add to index file tags that has resources to be caching (they can be anywhere)
- 3. Change attributes in clause 2: `src=url` > `data-src=url`, `href=url` > `data-href=url`, `style='background-image: URL("url")'` > `data-style-background-image=url`
+ 3. Change attributes in clause 2: `src=URL` > `data-src=URL`, `href=URL` > `data-href=URL`, `style='background-image: url("URL")'` > `data-style-background-image=URL`
  4. Create instance of class `Preloader` without parameters or with [optional] parameter  `callback` (type `function`).
  5. [optional] Configure Preloader instance by method `config`. See [Configure section](#Configure)
  6. Start with method `start`.
  
  ## Usage restrictions
  - `Preloader` use DOM, and method `start` must be called after `DOMContentLoaded` event.
- - Resources location is supported in accordance to the `same-origin` policy, CORS implementation is in TODO-list.
+ - Resources location is supported in accordance to the `same-origin` policy, CORS implementation is in [TODO-list](TODO).
+ - enabling built-in speed limit in some browsers leads to re-downloading some cached resources (.js, .css), which may delay resource activation until total download complete
 
 ## Configure
 
@@ -74,7 +91,7 @@ You can run Preloader without any parameters, so default values/actions will be 
 - no actions after caching and applying (without config.callback)
 - logging to console disabled (without config.enableLog)
 - resources will be activated after downloading all files except tags containing dataset-attributes 'data-cache' (without config.activateCondition and/or config.datasetToActivate)
-- getting urls by extracting them from tags containing dataset-attributes 'data-...' in the entire document (without config.urlsSource)
+- getting URLs by extracting them from tags containing dataset-attributes 'data-...' in the entire document (without config.urlsSource)
 
 Set callback function to run after caching and activating is done:
 ```
@@ -87,11 +104,11 @@ preloader.config({
 })
 ```
 Full list of config parameters:
-- callback callback function (type {Function})
-- enableLog enable logging to console: true/false (type {boolean})
-- activateCondition  css detection: a false condition that becomes true when external CSS rules are loaded and applied to DOM (type {string}).
-- datasetToActivate a string array with dataset's names in attributes of resources that must be activated after activateCondition becomes true (type {Array.<String>}). Example: ['data-src', 'data-href']
-- urlsSource url's sources: root node for url extraction or array with url's strings, default - root node: document (type {Array<string>|Document|HTMLElement}). Example: 
+- `callback` callback function (type {Function})
+- `enableLog` enable logging to console: true/false (type {boolean})
+- `activateCondition` css detection: a false condition that becomes true when external CSS rules are loaded and applied to DOM (type {string}).
+- `datasetToActivate` a string array with dataset's names in attributes of resources that must be activated after activateCondition becomes true (type {Array.<String>}). Example: ['data-src', 'data-href']
+- `urlsSource` URL's sources: root node for URLs extraction or array with URL's strings, default - root node: document (type {Array<string>|Document|HTMLElement}). 
 
 activateCondition and datasetToActivate must be assigned to activate resources immediately after applying an external set of CSS rules, before the end of loading all resources.
 
@@ -184,19 +201,7 @@ window.onload = () => preloader.start();
 ```
 
 ## TODO
-- [x] implement getting started without parameters
-- [x] implement instance configuration through instance config
-- [ ] implement i18n within t9n ?
-- [ ] add retry fetch when network error occurred while downloading
-- [ ] make more detailed errors analysis when loading resources
-- [ ] work out the case when CSS condition never becomes true. This condition is necessary to determine when the external CSS ruleset is applied to DOM
-- [ ] add front-end alternative for file sizing 
-- [ ] add CORS support for moving beyond the restrictions of same-origin policy
-- [ ] add support for priority download and activation
-- [ ] add templating for loader 
-- [ ] translate to english all JSDoc info and comments
-- [ ] implement early resource activation without specifying them in config.datasetToActivate
-- [ ] rendering artifacts in firefox? It looks like they gone
+[TODO list](TODO)
 
 ## Contributing
 Thanks for taking the time to start contributing!
@@ -211,12 +216,10 @@ This project accepts contribution via github [pull requests](https://help.github
 Please remember to read and observe the [Code of Conduct](https://github.com/cncf/foundation/blob/master/code-of-conduct.md).
 
 ## Communication
-
-If you have any questions or suggestions, please [file an issue](https://help.github.com/en/articles/creating-an-issue).
-Other forms of communication will be available later.
+If you have any questions or suggestions for this project, please [file an issue](https://help.github.com/en/articles/creating-an-issue). For other questions [contact me](https://github.com/Nickieros).
 
 ## Credits
-Nickieros
+2019 [Nickieros](https://github.com/Nickieros)
 
 ## License
 MIT
