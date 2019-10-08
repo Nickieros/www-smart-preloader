@@ -1,12 +1,11 @@
 # www-smart-preloader
-Web-smart-preloader is smoothing out the negative effect on the visitor during long page loading. It caches links inside a web page, displays a detailed loader, activates resources during and after downloading, and trigger callback.
-
+Web-smart-preloader is a pure Javascript class that smoothing out the negative effect on the visitor during long page loading. It caches links inside a web page, displays a detailed loader, activates resources during and after downloading, and trigger callback.
 ![Progress Bar](readme_media/progressbar.gif "Progress Bar")
 
 ![Preloader appearance](readme_media/preloader_appearance.gif "Preloader appearance")
 
 ## Overview
-Web-smart-preloader is a Javascript class with a little php help.  Its goal is smoothing out the negative effect on the visitor during long page loading. It pre-loads (caches) resources inside a web page, displays the loader as download bar with detailed information about downloading process: %, speed, overall downloaded/target size, file download with downloaded/target size etc. It can activate cached resources during and after downloading, and trigger callback at the end.
+Web-smart-preloader is a pure Javascript class with a little php help. Its goal is smoothing out the negative effect on the visitor during long page loading. It pre-loads (caches) resources inside a web page, displays the loader as download bar with detailed information about downloading process: %, speed, overall downloaded/target size, file download with downloaded/target size etc. It can activate cached resources during and after downloading, and trigger callback at the end.
 
 ## Table of contents
 - [Overview](#Overview)

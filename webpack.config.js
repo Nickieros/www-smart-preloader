@@ -1,9 +1,14 @@
 const path = require('path');
 
 module.exports = {
-    entry: ['babel-polyfill', './src/Preloader.js'],
+    entry: [
+        'babel-polyfill',
+        './src/Preloader.js',
+        // './src/1.js',
+    ],
     output: {
         filename: './Preloader.js',
+        //        filename: './1.js',
     },
     devtool: 'source-map',
     module: {

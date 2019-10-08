@@ -1,8 +1,21 @@
 /**
+ * @summary Web-smart-preloader is a pure Javascript class that smoothing out the negative effect on the visitor during long page loading.
+ * @description Web-smart-preloader is a pure Javascript class with a little php help.
+ * Its goal is smoothing out the negative effect on the visitor during long page loading.
+ * It pre-loads (caches) resources inside a web page, displays the loader as download bar with detailed information about downloading process:
+ *  - %
+ *  - speed
+ *  - overall downloaded/target size
+ *  - file download with downloaded/target size etc
+ *
+ * It can activate cached resources during and after downloading, and trigger callback at the end.
  * @translation
- * Detailed documentation on English for this class is on github: www-smart-preloader
- * I wrote code descriptions and comments in English for `config` only, the rest is in Russian.
+ * I wrote code descriptions and comments in English for `config` only, the rest is in Russian,
+ * but detailed documentation on English for this class is on github: {@link https://github.com/Nickieros/www-smart-preloader www-smart-preloader}
  * Translate everything into English is in TОDO-list, but google-translate also can :)
+ * @copyright Nickieros https://github.com/Nickieros
+ * @see https://github.com/Nickieros/www-smart-preloader www-smart-preloader on GitHub
+ * @version v.1.0.0.2
  * @global
  */
 window.Preloader = class Preloader {
@@ -185,19 +198,19 @@ window.Preloader = class Preloader {
         if (config.datasetToActivate) {
             if (!( // type checking for an array with strings that begin with 'data-'
                 Array.isArray(config.datasetToActivate)
-                && config.datasetToActivate.every((datasetName) => (
+                && config.datasetToActivate.every(datasetName => (
                     (typeof datasetName === 'string' || datasetName instanceof String)
                     && datasetName.indexOf('data-') === 0)))) {
                 throw Error('config.datasetToActivate must be an array with strings that begin with "data-"');
             }
-            this._datasetToActivate = config.datasetToActivate.map((datasetName) => this.toCamelCase(datasetName));
+            this._datasetToActivate = config.datasetToActivate.map(datasetName => this.toCamelCase(datasetName));
         }
 
         if (config.urlsSource) {
             const urls = config.urlsSource;
             if (urls) {
                 if (Array.isArray(urls)) {
-                    if (urls.every((url) => typeof url === 'string' || url instanceof String)) this._urls = urls;
+                    if (urls.every(url => typeof url === 'string' || url instanceof String)) this._urls = urls;
                 } else if (urls instanceof Document || urls instanceof HTMLElement) this._rootNode = urls;
                 if (!(this._urls || this._rootNode)) throw Error('urlsSource должно быть Array{String}|Document|HTMLElement');
             }
@@ -242,7 +255,7 @@ window.Preloader = class Preloader {
     _getDownloadLinks(nodeList = this._nodeList) {
         this.log('get download links');
         // noinspection JSUnresolvedFunction
-        return nodeList.map((htmlElement) => htmlElement.dataset.cache
+        return nodeList.map(htmlElement => htmlElement.dataset.cache
             || htmlElement.dataset.href
             || htmlElement.dataset.src
             || htmlElement.dataset.styleBackgroundImage);
@@ -271,7 +284,7 @@ window.Preloader = class Preloader {
                 body: JSON.stringify({ ...this._urls }), // преобразуем this._urls в формат json и записываем его в тело запроса
             },
         )
-        .then((response) => this._checkResponse(response, response.json)) // проверка на HTTP ошибки, ошибки несоответствия формату JSON
+        .then(response => this._checkResponse(response, response.json)) // проверка на HTTP ошибки, ошибки несоответствия формату JSON
         .then(this._checkFilesSize.bind(this)) // проверка на доступность ссылок/файлов
         .catch(this._onError.bind(this));
     }
@@ -535,7 +548,7 @@ window.Preloader = class Preloader {
     _activateDataSetResource(index, activateAfterCssRules) {
         const htmlElement = this._nodeList[index];
         Object.keys(htmlElement.dataset)
-        .forEach((datasetName) => {
+        .forEach(datasetName => {
             // если установлено условие в и активационный список содержит datasetName
             if (!this._isActivated[index] && activateAfterCssRules ? this._datasetToActivate.includes(datasetName) : true) {
                 this._isActivated[index] = true;
