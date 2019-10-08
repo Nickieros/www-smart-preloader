@@ -1,5 +1,7 @@
 # www-smart-preloader
 Web-smart-preloader is a pure Javascript class that smoothing out the negative effect on the visitor during long page loading. It caches links inside a web page, displays a detailed loader, activates resources during and after downloading, and trigger callback.
+
+
 ![Progress Bar](readme_media/progressbar.gif "Progress Bar")
 
 ![Preloader appearance](readme_media/preloader_appearance.gif "Preloader appearance")
